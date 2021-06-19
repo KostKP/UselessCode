@@ -1,0 +1,57 @@
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace UselessCode
+{
+    class WebJSONModule
+    {
+        public struct OpenQuestionsQ
+        {
+            public List<string> Answers;
+        }
+
+        public struct MultipleChoice
+        {
+            public Dictionary<string,bool> Answers;
+        }
+
+        public string QPath { get; set; } = "http://test.site/json/";
+        public object GetJSONStruct(string FName)
+        {
+            JObject json = JObject.Parse(new System.Net.WebClient().DownloadString(QPath + FName));
+            JToken jvalue;
+            if (json.TryGetValue("type", out jvalue)) {
+                if (jvalue.Value<int>() == 0)
+                {
+                    if (json.TryGetValue("answers", out jvalue))
+                    {
+                        OpenQuestionsQ outr = new OpenQuestionsQ();
+                        outr.Answers = new List<string>();
+                        foreach (var i in jvalue) outr.Answers.Add(i.Value<string>());
+                        return outr;
+                    }
+                    else return null; //Нет Ответов
+                }
+                else
+                {
+                    if (json.TryGetValue("answers", out jvalue))
+                    {
+                        MultipleChoice outr = new MultipleChoice();
+                        outr.Answers = new Dictionary<string, bool>();
+                        foreach (var i in (JObject)jvalue)
+                        {
+                            outr.Answers.Add(i.Key, Convert.ToBoolean(i.Value.Value<int>()));
+                        }
+                        return outr;
+                    }
+                    else return null; //Нет Ответов
+                }
+            }
+            else return null;
+        }
+    }
+}
