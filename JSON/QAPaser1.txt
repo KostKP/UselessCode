@@ -46,7 +46,7 @@ namespace ConsoleApp3 //UselessCode
                     {
                         MultipleChoice outr = new MultipleChoice();
                         outr.Answers = new Dictionary<string, bool>();
-                        foreach (var i in (JObject)jvalue) outr.Answers.Add(i.Key, Convert.ToBoolean(i.Value.Value<int>()));
+                        foreach (var i in (JObject)jvalue) outr.Answers.Add(i.Key, i.Value.Value<bool>());
                         if (!json.TryGetValue("text", out jvalue)) return null; //Нет Вопроса
                         outr.Question = jvalue.Value<string>();
                         return outr;
