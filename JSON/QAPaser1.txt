@@ -5,17 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UselessCode
+namespace ConsoleApp3 //UselessCode
 {
     class WebJSONModule
     {
         public struct OpenQuestionsQ
         {
+            public string Question;
             public List<string> Answers;
         }
 
         public struct MultipleChoice
         {
+            public string Question;
             public Dictionary<string,bool> Answers;
         }
 
@@ -32,6 +34,8 @@ namespace UselessCode
                         OpenQuestionsQ outr = new OpenQuestionsQ();
                         outr.Answers = new List<string>();
                         foreach (var i in jvalue) outr.Answers.Add(i.Value<string>());
+                        if (!json.TryGetValue("text", out jvalue)) return null; //Нет Вопроса
+                        outr.Question = jvalue.Value<string>();
                         return outr;
                     }
                     else return null; //Нет Ответов
@@ -42,10 +46,9 @@ namespace UselessCode
                     {
                         MultipleChoice outr = new MultipleChoice();
                         outr.Answers = new Dictionary<string, bool>();
-                        foreach (var i in (JObject)jvalue)
-                        {
-                            outr.Answers.Add(i.Key, Convert.ToBoolean(i.Value.Value<int>()));
-                        }
+                        foreach (var i in (JObject)jvalue) outr.Answers.Add(i.Key, Convert.ToBoolean(i.Value.Value<int>()));
+                        if (!json.TryGetValue("text", out jvalue)) return null; //Нет Вопроса
+                        outr.Question = jvalue.Value<string>();
                         return outr;
                     }
                     else return null; //Нет Ответов
