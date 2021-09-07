@@ -16,7 +16,7 @@
     function StartPauseStopWatch() {
         if (this.StartPoint == -1) {
             StartPoint = new Date().getTime() - this.GlobalTime;
-            this.StopWatchObj = setInterval(function () { StopWatchExecutor(); }, 50);
+            this.StopWatchObj = setInterval(function () { StopWatchExecutor(); }, 1);
         }
         else {
             clearInterval(this.StopWatchObj);
