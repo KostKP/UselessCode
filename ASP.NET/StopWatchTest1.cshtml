@@ -1,0 +1,40 @@
+<script language="JavaScript" type="text/javascript">
+    var GlobalTime = 0;
+    var StartPoint = -1;
+    var StopWatchObj;
+
+    //96H Max
+    function StopWatchExecutor() {
+        var _curTime = new Date().getTime() - this.StartPoint;
+        if (_curTime > 345600000) ClearStopWatch();
+        var _ss = ~~(_curTime / 1000) % 60;
+        var _mm = ~~(_curTime / 60000) % 60;
+        var _hh = ~~(_curTime / 3600000) % 60;
+        document.StopWatchForm.stopwatch.value = (_hh < 10 ? '0' + _hh : _hh) + ':' + (_mm < 10 ? '0' + _mm : _mm) + ':' + (_ss < 10 ? '0' + _ss : _ss) + ':' + ((_curTime % 1000) + 1000).toString().substring(1);
+    }
+
+    function StartPauseStopWatch() {
+        if (this.StartPoint == -1) {
+            StartPoint = new Date().getTime() - this.GlobalTime;
+            this.StopWatchObj = setInterval(function () { StopWatchExecutor(); }, 50);
+        }
+        else {
+            clearInterval(this.StopWatchObj);
+            this.GlobalTime = new Date().getTime() - this.StartPoint;
+            this.StartPoint = -1;
+        }
+    }
+
+    function ClearStopWatch() {
+        clearInterval(this.StopWatchObj);
+        this.GlobalTime = 0;
+        this.StartPoint = -1;
+        document.StopWatchForm.stopwatch.value = "00:00:00.000"
+    }
+</script>
+
+<form name=StopWatchForm>
+    <input name=stopwatch size=10 value="00:00:00.000">
+    <input type=button value="Запуск/Пауза" onclick="StartPauseStopWatch()">
+    <input type=button value="Очистить" onclick="ClearStopWatch()">
+</form>
